@@ -150,9 +150,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       .toggle-password {
         float: right;
         cursor: pointer;
-        margin-right: 10px;
-        margin-top: -30px;
-        height: 25px;
+    }
+      label.error {
+        color: red !important;
+    }
+    input.error{
+        border-color: green;
     }
 </style>
 
@@ -169,72 +172,88 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="card col-md-8">
             <div class="card-body">
                 <h3 class="text-center text-secondary mb-4">Sign Up</h3>
-                    <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" id="formregisterid">
+                    <form id="formregisterid" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" >
                         <div class="row g-3">
+                            
                             <div class="col-md-6">
-                                <label for="firstname" class="form-label">First Name</label>
-                                <span class="text-danger">*</span>
-                                
-                                <input type="text" name="firstName" id="firstName" class="form-control border-info <?php echo $firstNameError ? 'border-danger' : '' ?>" value="<?php echo $firstName; ?>" placeholder="First name">
-                                <small class="text-danger error"><?php echo $firstNameError; ?></small>
-                                <small class="text-danger invalid-feedback" id="checkFirstNameCharacter">name is required</small>
-                                
+                                    <label for="firstname" class="form-label">First Name</label>
+                                    <span class="text-danger">*</span>
+                                    <div class="input-group">  
+                                        <span class="input-group-text">
+                                            <i class="bi bi-person"></i>                               
+                                        </span>   
+                                        <input type="text" name="firstName" id="firstName" class="form-control border-info <?php echo $firstNameError ? 'border-danger' : '' ?>" value="<?php echo $firstName; ?>" placeholder="First name">
+                                    </div>
+                                        <label id="firstName-error" class="error" for="firstName"></label>
+                                        <small class="text-danger error"><?php echo $firstNameError; ?></small>
+                                        <small class="text-danger invalid-feedback" id="checkFirstNameCharacter">name is required</small>              
                             </div>
 
                             <div class="col-md-6">
                                 <label for="lastname" class="form-label">Last Name</label>
                                 <span class="text-danger">*</span>
-                                <input type="text" name="lastName" class="form-control border-info <?php echo $lastNameError ? 'border-danger' : '' ?>" value="<?php echo $lastName; ?>"  id="lastName" placeholder="Last name">
+                                <div class="input-group">  
+                                    <span class="input-group-text">
+                                        <i class="bi bi-person"></i>                               
+                                    </span>  
+                                    <input type="text" name="lastName" class="form-control border-info <?php echo $lastNameError ? 'border-danger' : '' ?>" value="<?php echo $lastName; ?>"  id="lastName" placeholder="Last name">
+                                </div>
+                                <label id="lastName-error" class="error" for="lastName"></label>
                                 <small class="text-danger"><?php echo $lastNameError; ?></small>
                                 <small class="text-danger invalid-feedback" id="checkLastName">last name is required</small>
                             </div>
 
                             <div class="col-12">
-                                <label for="email" class="form-label">Email</label>
+                                <label for="email" class="form-label">Email:</label>
                                 <span class="text-danger">*</span>
-                                <input type="email" name="email" class="form-control border-info <?php echo $emailError ? 'border-danger' : '' ?>" value="<?php echo $email; ?>" id="email" placeholder="Email">
-                                <small class="text-danger"><?php echo $emailError; ?></small>
-                                <small class="text-danger invalid-feedback" id="checEmailName">email is required</small>
-                            </div>
+                                <div class="input-group">     
+                                    <span class="input-group-text">
+                                        <i class="bi bi-envelope"></i>                                    
+                                    </span>                                          
+                                    <input type="email" name="email" id="email" class="form-control border-info email <?php echo $emailError ? 'border-danger' : '' ?>" value="<?php echo $email; ?>" placeholder="Email">   
+                                </div>
+                                    <label id="email-error" class="error" for="email"></label>
+                                    <small class="form-text text-danger invalid-feedback">Email is required</small>
+                                    <small class="text-danger"> <?php echo $emailError  ?></small>    
+                            </div>                          
 
                             <div class="col-12 col-md-6">
                                 <label for="password" class="form-label">Password:</label>
                                 <span class="text-danger">*</span>
-                                <input type="password" name="password" id="password" class="form-control border-info password <?php echo $lastNameError ? 'border-danger' : '' ?>" value="<?php echo $password; ?>" placeholder="Password">
-                                <span class="input-group-text toggle-password" toggle="#password-field" id="password">
-                                    <i class="bi bi-eye"></i>
-                                </span>                
+                                <div class="input-group">                                                               
+                                    <input type="password" name="password" id="password-field" class="form-control border-info password <?php echo $passwordError ? 'border-danger' : '' ?>"  value="<?php echo $password; ?>" placeholder="enter password">
+                                    <span class="input-group-text toggle-password" toggle="#password-field">
+                                        <i class="bi bi-eye"></i>      
+                                    </span>    
+                                </div>         
+                                <label id="password-field-error" class="error" for="password-field">Password should be more than 8 character</label>
                                 <small class="text-danger"> <?php echo $passwordError  ?></small>
-                                <small class="form-text text-danger invalid-feedback" id="passwordvalid">password is required</small>      
+                                <small class="form-text text-danger invalid-feedback">Password is required</small>     
                             </div>
-
-                       
-
 
                             <div class="col-12 col-md-6">
                                 <label for="cnfpassword" class="form-label">Confirm Password</label>
                                 <span class="text-danger">*</span>
-                                <input type="password" name="cnfpassword" class="form-control border-info <?php echo $lastNameError ? 'border-danger' : '' ?>" id="cnfpassword" value="<?php echo $cnfpassword; ?>" placeholder="Confirm Password">
-                                    <span class="input-group-text toggle-password" toggle="#password-field" id="cnfpassword">
-                                        <i class="bi bi-eye"></i>
-                                    </span>                      
+                                <div class="input-group">                              
+                                    <input type="password" name="cnfpassword" class="form-control border-info <?php echo $cnfpasswordError? 'border-danger' : '' ?>" id="cnfpassword" value="<?php echo $cnfpassword; ?>" placeholder="Confirm Password">
+                                    <span class="input-group-text toggle-password" toggle="#password-field">
+                                        <i class="bi bi-eye"></i>      
+                                    </span> 
+                                </div>  
+                                <label id="cnfpassword-error" class="error" for="cnfpassword"></label>
                                 <small class="text-danger"><?php echo $cnfpasswordError; ?></small>
                                 <small class="form-text text-danger invalid-feedback" id="cnfpasswordvalid">confirm password is required</small>           
                             </div>
 
-                            
-
                             <div class="col-12">
                                 <label for="gender" class="form-label">Role</label>
                                 <span class="text-danger">*</span><br>
-                                <input type="radio" name="role" class="form-check-input border-info" value="admin" checked> Admin
-                                <input type="radio" name="role" class="form-check-input border-info" value="user"> User      
+                                <input type="radio" name="role" class="form-check-input border-info" value="user" checked> User   
+                                <input type="radio" name="role" class="form-check-input border-info" value="admin" > Admin                 
                             </div>
-
                             <div class="col-12 text-center">
-                                <button type="submit" id="submitform" class="btn btn-info text-light w-100 py-2">Register</button>
+                                <button type="submit" id="submitloginform" class="btn btn-info text-light w-100 py-2">Register</button>
                             </div>
-
                             <div class="col-12 text-center mt-2">
                                 <p>Already have an account? <a class="text-decoration-none" href="login.php">Sign in</a></p>
                             </div>
@@ -332,15 +351,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         let passwordInput = $(".password");
         let password = passwordInput.val().trim();
 
-       // console.log(password);
+       console.log(password);
 
         if ( password === "" ) {
             passwordInput.addClass("border-danger").removeClass("border-info");
             $("#passwordvalid").show();
             $("#passwordvalid").text("password is required");
             return false;
-        } else if ( password.length < 8 ) {
+        } else if ( password.length <= 8 ) {
             passwordInput.addClass("border-danger").removeClass("border-info");
+             $("#passwordvalid").text("password is required");
             $("#passwordvalid").text("password must be more than 8 character");
             return false;
         } else {
@@ -359,12 +379,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         let cnfpasswordInput = $("#cnfpassword");
         let cnfpassword = cnfpasswordInput.val();
 
-        if ( cnfpassword === "" ) {
-            cnfpasswordInput.addClass("border-danger").removeClass("border-info");
-            $("#cnfpasswordvalid").text("confirm password is required");
-            $("#cnfpasswordvalid").show();
-            return false;
-        } else if ( password !== cnfpassword ) {
+
+
+       if ( password !== cnfpassword ) {
             cnfpasswordInput.addClass("border-danger").removeClass("border-info");
             $("#cnfpasswordvalid").html("confirm password must match password");
             return false;
@@ -376,34 +393,120 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
  $(document).ready(function () {
 
-    $("#submitform").click(function(event){ 
-        const fnstatus = validateFirstName();
-        const lnstatus = validateLastName();
-        const emailstatus = validateEmail();
-        const password = validatePassword();
-        const cnfpassword = validateConfirmPassword();
+    // $("#submitloginform").click(function (event) {
+    //       event.preventDefault();
+    //     });
 
-        if ( fnstatus && lnstatus && emailstatus && password && cnfpassowrd ) {
-            console.log("form submit");
-        } else {
-            console.log("form not submit");
-            event.preventDefault();
-        }
+        $.validator.addMethod(
+            "IsValidEmail",
+            function (value, element) {
+                let emailRegEx = new RegExp(
+                    /^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i,
+                );
+                return emailRegEx.test(value);
+            },
+          "invalid email",
+        );
 
+        $("#formregisterid").validate({
+          onkeydown: function (element) {
+            let validator = this;
+            setTimeout(function () {
+              validator.element(element);
+            }, 1000);
+          },
+          rules: {
+            firstName: {
+                required: true,
+                minlength: 3,
+            },
+            lastName: {
+                required: true,
+                minlength: 3,
+            },
+            email: {
+                required: true,
+                email: true,
+                IsValidEmail: true,
+            },
+            password: {
+                required: true,
+                minlength: 8,
+            },
+            cnfpassword: {
+                required: true,
+                equalTo: "#password",
+            },
+          },
+          messages: {
+            firstName: {
+                required: "Name is required",
+                minlength: "Name must contain 3 alphabhets",
+            },
+            lastName: {
+                required: "LastName is required",
+                minlength: "LastName must contain 3 alphabhets",
+            },
+            email: {
+              required: "Email is required",
+            },
+            password: {
+              required: "Password is required",
+              minlength: "Password should be more than 7 character",
+            },
+            cnfpassword: {
+                required: "confirm password is requried",
+                equalTo: "",
+            },
 
-    })
-        
+            
+          },
+
+          highlight: function(error,element,validClass){
+            $(element).removeClass("border-info").addClass("border-success");
+          },
+
+          submitHandler: function (form) {
+            debugger 
+            form.submit();
+          },
+        });
+
+            $("#submitloginform").click(function (event) {
+                        
+                const fnstatus = validateFirstName();
+                const lnstatus = validateLastName();
+                const emailstatus = validateEmail();
+                const passwordstatus = validatePassword();
+                const cnfpasswordstatus = validateConfirmPassword();
+                
+                console.log(event);
+
+            if(fnstatus && lnstatus && emailstatus && passwordstatus && cnfpasswordstatus ) {
+                debugger
+                console.log("form ready to submit");
+                // event.target.submit();
+                document.getElementById('submitloginform').requestSubmit();
+
+                
+            } else {
+                event.preventDefault();   
+                console.log("form not submit");           
+            }
+        });
+
+    
     $(".toggle-password").click(function(){
-      let input = $(this).siblings("input");
-      let icon = $(this).find("i");
+        let input = $(this).siblings("input");
+        let icon = $(this).find("i");
 
-      if (input.attr("type") === "password") {
-          input.attr("type", "text");
-          icon.removeClass("bi-eye").addClass("bi-eye-slash");
-      } else {
-          input.attr("type", "password");
-          icon.removeClass("bi-eye-slash").addClass("bi-eye");
-      }
+        if (input.attr("type") === "password") {
+            input.attr("type", "text");
+            icon.removeClass("bi-eye").addClass("bi-eye-slash");
+        } else {
+            input.attr("type", "password");
+            icon.removeClass("bi-eye-slash").addClass("bi-eye");
+        }
     });
         //firstname
         $("#firstName").on("keyup blur",validateFirstName);
@@ -418,8 +521,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $(".password").on("keyup blur", validatePassword);
 
         // confirm password
-        $("#cnfpassword").on("keyup blur",validateConfirmPassword);
-        
+        $("#cnfpassword").on("keyup blur",validateConfirmPassword);        
 
         
         setTimeout(() => {
