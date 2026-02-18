@@ -1,117 +1,101 @@
-<?php
-session_start();
+ <script>
+$(document).ready(function () {
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+    // Custom Email Regex
+    $.validator.addMethod(
+        "IsValidEmail",
+        function (value, element) {
+            return /^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i.test(value);
+        },
+        "Invalid email format"
+    );
 
-include './db.php';
-include './link.php';
+    $("#formregisterid").validate({
 
-/* ================= VARIABLES ================= */
-
-$emailError = $passwordError = $alert = null;
-$emailFlag = $passwordFlag = true;
-
-$email = $password = null;
-
-/* ================= FUNCTIONS ================= */
-
-function checkPassword($password)
-{
-    $errors = [];
-
-    if (strlen($password) < 8) {
-        $errors[] = "Password must be at least 8 characters";
-    }
-    if (!preg_match("/[a-z]/", $password)) {
-        $errors[] = "Password must contain at least one lowercase letter";
-    }
-    if (!preg_match("/[A-Z]/", $password)) {
-        $errors[] = "Password must contain at least one uppercase letter";
-    }
-    if (!preg_match("/[0-9]/", $password)) {
-        $errors[] = "Password must contain at least one digit";
-    }
-
-    return $errors;
-}
-
-/* ================= FORM SUBMIT ================= */
-
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
-
-    /* ===== EMAIL VALIDATION ===== */
-
-    if (empty($_POST['email'])) {
-        $emailError = "Email is required";
-        $emailFlag = false;
-    } elseif (!filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
-        $emailError = "Invalid email format";
-        $emailFlag = false;
-    } else {
-        $email = trim($_POST['email']);
-    }
-
-    /* ===== PASSWORD VALIDATION ===== */
-
-    if (empty($_POST['password'])) {
-        $passwordError = "Password is required";
-        $passwordFlag = false;
-    } else {
-
-        $passwordErrors = checkPassword($_POST['password']);
-
-        if (!empty($passwordErrors)) {
-            $passwordError = implode("<br>", $passwordErrors);
-            $passwordFlag = false;
-        } else {
-            $password = $_POST['password'];
-            $passwordFlag = true;
-        }
-    }
-
-    /* ===== IF VALIDATION PASSED ===== */
-
-    if ($emailFlag && $passwordFlag) {
-
-        try {
-            $stmt = $connect->prepare("SELECT * FROM users WHERE email = ?");
-            $stmt->execute([$email]);
-            $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($user && password_verify($password, $user['password'])) {
-
-                /* ===== SESSION SET ===== */
-                $_SESSION['firstname'] = $user['firstname'];
-                $_SESSION['lastname']  = $user['lastname'];
-                $_SESSION['email']     = $user['email'];
-                $_SESSION['role']      = $user['role'];
-
-                /* ===== REMEMBER ME ===== */
-                if (!empty($_POST['rememberMe'])) {
-                    setcookie("user_email", $user['email'], time() + (86400 * 7), "/");
-                }
-
-                /* ===== REDIRECT BY ROLE ===== */
-                if ($user['role'] === "admin") {
-                    header("Location: admin_dashboard.php");
-                    exit();
-                } elseif ($user['role'] === "user") {
-                    header("Location: user_dashboard.php");
-                    exit();
-                }
-
-            } else {
-                $alert = "<div class='alert alert-danger mt-4'>Invalid email or password</div>";
+        rules: {
+            firstName: {
+                required: true,
+                minlength: 3,
+                lettersonly: true
+            },
+            lastName: {
+                required: true,
+                minlength: 3,
+                lettersonly: true
+            },
+            email: {
+                required: true,
+                email: true,
+                IsValidEmail: true
+            },
+            password: {
+                required: true,
+                minlength: 8
+            },
+            cnfpassword: {
+                required: true,
+                equalTo: "#password-field"
+            },
+            role: {
+                required: true
             }
+        },
 
-        } catch (PDOException $e) {
-            $alert = "<div class='alert alert-danger mt-4'>Database Error</div>";
+        messages: {
+            firstName: {
+                required: "First name is required",
+                minlength: "Minimum 3 characters required"
+            },
+            lastName: {
+                required: "Last name is required",
+                minlength: "Minimum 3 characters required"
+            },
+            email: {
+                required: "Email is required"
+            },
+            password: {
+                required: "Password is required",
+                minlength: "Password must be at least 8 characters"
+            },
+            cnfpassword: {
+                required: "Confirm password is required",
+                equalTo: "Passwords do not match"
+            },
+            role: {
+                required: "Please select role"
+            }
+        },
+
+        errorElement: "small",
+        errorClass: "text-danger",
+
+        highlight: function (element) {
+            $(element).addClass("is-invalid").removeClass("is-valid");
+        },
+
+        unhighlight: function (element) {
+            $(element).removeClass("is-invalid").addClass("is-valid");
+        },
+
+        submitHandler: function (form) {
+            form.submit();
         }
 
-    } else {
-        $alert = "<div class='alert alert-danger mt-4'>Please fix validation errors</div>";
-    }
-}
-?>
+    });
+
+    // Password toggle
+    $(".toggle-password").click(function () {
+        let input = $(this).siblings("input");
+        let icon = $(this).find("i");
+
+        if (input.attr("type") === "password") {
+            input.attr("type", "text");
+            icon.removeClass("bi-eye").addClass("bi-eye-slash");
+        } else {
+            input.attr("type", "password");
+            icon.removeClass("bi-eye-slash").addClass("bi-eye");
+        }
+    });
+
+});
+</script>
